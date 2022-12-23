@@ -853,7 +853,6 @@ var Vue = (function (exports) {
 
   // TODO lihh overwrite array
   function createArrayInstrumentations() {
-
     // 实现数组的函数的 重写
     const instrumentations = {};
     ["includes", "indexOf", "lastIndexOf"].forEach((key) => {
@@ -895,7 +894,6 @@ var Vue = (function (exports) {
    */
   function createGetter(isReadonly = false, shallow = false) {
     return function get(target, key, receiver) {
-
       // 是否响应式
       if (key === "__v_isReactive" /* ReactiveFlags.IS_REACTIVE */) {
         return !isReadonly;
@@ -957,9 +955,19 @@ var Vue = (function (exports) {
   }
   const set = /*#__PURE__*/ createSetter();
   const shallowSet = /*#__PURE__*/ createSetter(true);
+
+  // TODO lihh setter
+  /**
+   *
+   * @param shallow
+   * @returns {(function(*, *, *, *): (boolean|boolean))|*}
+   */
   function createSetter(shallow = false) {
     return function set(target, key, value, receiver) {
+      // 获取旧的值
       let oldValue = target[key];
+
+      // 如果是只读的 就不能够重新赋值
       if (isReadonly(oldValue) && isRef(oldValue) && !isRef(value)) {
         return false;
       }
@@ -968,11 +976,15 @@ var Vue = (function (exports) {
           oldValue = toRaw(oldValue);
           value = toRaw(value);
         }
+
+        // 内部会实现自动赋值。会触发ref的 setter
         if (!isArray(target) && isRef(oldValue) && !isRef(value)) {
           oldValue.value = value;
           return true;
         }
       }
+
+      // 如果是数组的话，下标小于length就是修改，>= length 就是添加。 如果是对象的话 直接判断属性是否存在
       const hadKey =
         isArray(target) && isIntegerKey(key)
           ? Number(key) < target.length

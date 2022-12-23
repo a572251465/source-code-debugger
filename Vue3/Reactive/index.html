@@ -11,25 +11,53 @@
     <script src="../../Code/vue.global.js"></script>
   </head>
   <body>
+    <div id="app"></div>
     <script>
-      const { reactive } = Vue;
-      debugger
+      const app = document.getElementById("app");
+
+      const { reactive, effect, ref } = Vue;
+      const address = ref("地址1")
+      const count = ref(0)
       const data = {
         name: 'lihh',
         age: 20,
         school: {
           name: "大学"
         },
-        names: ["li", "wang", "zhao"]
+        count,
+        names: ["li", "wang", "zhao"],
+        address
       }
       const res = reactive(data)
       const res0 = reactive(data);
 
       // 1. 表示内部proxy 有缓存
-      console.log(res === res0)
+      // console.log(res === res0)
 
       // 2. reactive 的参数必须是对象
-      const res1 = reactive(1)
+      // const res1 = reactive(1)
+
+      // 3. 如果响应式元素是一个ref 直接获取.value的值
+      // console.log(res.address)
+
+      /**effect(() => {
+        res.names.forEach(item => {
+          console.log(item)
+        })
+      })
+
+      setTimeout(() => {
+        res.names.push("qian")
+      }, 3000)*/
+      // 4. 上述实例中 在执行forEach的时候 会收集length属性依赖。 在push的时候，会触发length属性的依赖
+
+      effect(() => {
+        app.innerHTML = res.count
+      })
+
+      setTimeout(() => {
+        res.count ++;
+      }, 2000)
     </script>
   </body>
 </html>
