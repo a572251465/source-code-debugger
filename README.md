@@ -25,3 +25,6 @@
 > 通过这篇源码的学习，会分析每个工作中能用到知识点。并且会以demo为例，进行源码讲解
 
 [详细的源码分析](./Vue3/README.md)
+
+例如：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/3e7f2921d5cd48b1bec7622b64e55d96.png)
