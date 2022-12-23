@@ -13,7 +13,6 @@
   <body>
     <script>
       const { reactive } = Vue;
-      // 1. 如果内容是对象的时候
       debugger
       const data = {
         name: 'lihh',
@@ -24,12 +23,12 @@
         names: ["li", "wang", "zhao"]
       }
       const res = reactive(data)
-      console.log(res)
       const res0 = reactive(data);
-      console.log(res === res0) // true
 
-      // 2. 如果内容是普通的数值的时候
-      // -- 使用reactive的话 必须是对象
+      // 1. 表示内部proxy 有缓存
+      console.log(res === res0)
+
+      // 2. reactive 的参数必须是对象
       const res1 = reactive(1)
     </script>
   </body>

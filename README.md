@@ -12,7 +12,7 @@
 ## 2. 目的
 
 - 对自我源码学习的一种积累
-- 提高`知名度`
+- 提高项目`知名度`
 - 知识共享，免费学习
 
 ## 3. 源码
@@ -24,3 +24,12 @@
 
 > 通过这篇源码的学习，会分析每个工作中能用到知识点。并且会以demo为例，进行源码讲解
 
+### 3.2 Reactive 分析
+
+#### 3.2.1 标识
+
+> 可以根据下面的标识来搜寻代码。代码中详细的写注释了，可以根据入口来寻找
+
+- `TODO lihh Reactive entry` reactive 入口
+- `TODO lihh overwrite array` reactive 数组函数重写
+- `TODO lihh getter` reactive getter 实现部分
