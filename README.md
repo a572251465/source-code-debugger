@@ -27,4 +27,8 @@
 [详细的源码分析](./Vue3/README.md)
 
 例如：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/3e7f2921d5cd48b1bec7622b64e55d96.png)
+- Reactive 实例过程
+    ![在这里插入图片描述](https://img-blog.csdnimg.cn/3e7f2921d5cd48b1bec7622b64e55d96.png)
+
+- Ref 实现过程
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/a1848b91367a464ab017ef9666460cc2.png#pic_center)

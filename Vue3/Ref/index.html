@@ -6,8 +6,21 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Ref</title>
+    <script src="../../Code/vue.global.js"></script>
 </head>
 <body>
+<div id="app"></div>
+<script>
+    const {ref} = Vue
+    const data = {
+      name: 'lihh',
+      age: 20
+    }
 
+    const ref1 = ref(data)
+    const ref2 = ref(0)
+    console.log(ref1)
+    console.log(ref2)
+</script>
 </body>
 </html>

@@ -1554,6 +1554,8 @@ var Vue = (function (exports) {
     def(value, "__v_skip" /* ReactiveFlags.SKIP */, true);
     return value;
   }
+
+  // 判断是否是对象 如果是对象的话 使用reactive 反之 直接返回原来的值
   const toReactive = (value) => (isObject(value) ? reactive(value) : value);
   const toReadonly = (value) => (isObject(value) ? readonly(value) : value);
 
@@ -1585,6 +1587,8 @@ var Vue = (function (exports) {
   function isRef(r) {
     return !!(r && r.__v_isRef === true);
   }
+  
+  // TODO lihh ref entry
   function ref(value) {
     return createRef(value, false);
   }
@@ -1592,11 +1596,14 @@ var Vue = (function (exports) {
     return createRef(value, true);
   }
   function createRef(rawValue, shallow) {
+    // 判断是否是Ref 如果已经是Ref了 直接返回
     if (isRef(rawValue)) {
       return rawValue;
     }
     return new RefImpl(rawValue, shallow);
   }
+
+  // TODO lihh ref impl method
   class RefImpl {
     constructor(value, __v_isShallow) {
       this.__v_isShallow = __v_isShallow;
@@ -1605,7 +1612,11 @@ var Vue = (function (exports) {
       this._rawValue = __v_isShallow ? value : toRaw(value);
       this._value = __v_isShallow ? value : toReactive(value);
     }
+
+    // 通过.value 触发getter方法 进行依赖收集
     get value() {
+
+      // 依赖收集
       trackRefValue(this);
       return this._value;
     }
@@ -1613,9 +1624,12 @@ var Vue = (function (exports) {
       const useDirectValue =
         this.__v_isShallow || isShallow(newVal) || isReadonly(newVal);
       newVal = useDirectValue ? newVal : toRaw(newVal);
+      // 判断新旧值 是否发生了变化
       if (hasChanged(newVal, this._rawValue)) {
         this._rawValue = newVal;
         this._value = useDirectValue ? newVal : toReactive(newVal);
+
+        // 触发依赖收集
         triggerRefValue(this, newVal);
       }
     }

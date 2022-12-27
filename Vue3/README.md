@@ -52,3 +52,32 @@
 - 在setter方法中 如果判断是新增以及修改呢
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/a4665f174a904ac0a6bd555e88a8378a.png)
+
+## 3.3 Ref 分析
+
+### 3.3.1 标识
+
+- `TODO lihh ref entry` Ref 实现入口
+- `TODO lihh ref impl method` Ref 实现方法
+
+### 3.3.2 实现流程
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/a1848b91367a464ab017ef9666460cc2.png#pic_center)
+
+### 3.3.3 细节点
+
+### 3.3.3.1 经典面试题：
+
+> 一般我们在面试中问到Vue2 以及Vue3的区别的时候，响应式必不可少。但是为什么说Vue3中，如果是对象的话使用了proxy。但是普通的值还是使用了Object.defineProperty呢。接下来给大家说下：
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/5d05f0af4b3447f2ae8c65715b10b587.png)
+
+- 我们可以看下上述babel转换内容。其实通过get/ set访问器模式就是Object.defineProperty的升级版
+- 所以说到底`Ref` 就是Object.defineProperty来实现的
+
+### 3.3.3.2 使用Ref 定义对象
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/e5fe945bc1554757a315498180281a0d.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/9bdcd56390534b32a27418c947d4b3a2.png)
+
+通过上述的截图中，我们可以看到如果使用Ref来定义对象的话，其实最终还是调用了Reactive来进行转换
