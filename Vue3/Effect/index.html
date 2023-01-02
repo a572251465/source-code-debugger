@@ -6,8 +6,22 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Effect</title>
+    <script src="../../Code/vue.global.js"></script>
 </head>
 <body>
+<div id="app"></div>
+<script>
+const {effect, reactive} = Vue
+const app = document.getElementById("app")
+const data = reactive({
+  name: "lihh",
+  age: 20
+})
 
+debugger
+effect(() => {
+  app.innerHTML = `此人的姓名是：${data.name}, 年龄是: ${data.age}`
+})
+</script>
 </body>
 </html>

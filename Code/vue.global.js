@@ -601,24 +601,37 @@ var Vue = (function (exports) {
    * When recursion depth is greater, fall back to using a full cleanup.
    */
   const maxMarkerBits = 30;
+  // 此方法表示全局的effect。 比如watch/ computed都是为了收集这个effect
   let activeEffect;
   const ITERATE_KEY = Symbol("iterate");
   const MAP_KEY_ITERATE_KEY = Symbol("Map key iterate");
+
+  // todo lihh effect core
   class ReactiveEffect {
     constructor(fn, scheduler = null, scope) {
+      // effect 需要执行的方法
       this.fn = fn;
+      // 是一个自定义方法，用来调度用的
       this.scheduler = scheduler;
       this.active = true;
       this.deps = [];
+      // 为了多个effect嵌套用的
       this.parent = undefined;
       recordEffectScope(this, scope);
     }
+
+    // 表示effect 执行的方法
     run() {
       if (!this.active) {
         return this.fn();
       }
+      // 此方法是为了多个effect嵌套用的。 如果此时effect是一个的话，那么activeEffect就是一个undefined
       let parent = activeEffect;
       let lastShouldTrack = shouldTrack;
+
+      // 此方法为了寻找 真正active 的effect。
+      // 如果此时有两级嵌套的effect的话，从里层退出到外层的时候，parent有值 && parent !== this.
+      // 而是parent === parent.parent
       while (parent) {
         if (parent === this) {
           return;
@@ -626,6 +639,8 @@ var Vue = (function (exports) {
         parent = parent.parent;
       }
       try {
+
+        // 此时effect的目的其实为了回头
         this.parent = activeEffect;
         activeEffect = this;
         shouldTrack = true;
@@ -635,6 +650,8 @@ var Vue = (function (exports) {
         } else {
           cleanupEffect(this);
         }
+
+        // 执行fn方法
         return this.fn();
       } finally {
         if (effectTrackDepth <= maxMarkerBits) {
@@ -671,15 +688,20 @@ var Vue = (function (exports) {
       deps.length = 0;
     }
   }
+
+  // todo lihh effect entry
   function effect(fn, options) {
     if (fn.effect) {
       fn = fn.effect.fn;
     }
+
+    // 表示effect核心实现
     const _effect = new ReactiveEffect(fn);
     if (options) {
       extend(_effect, options);
       if (options.scope) recordEffectScope(_effect, options.scope);
     }
+    // 如果是effect的话 无参数的情况下 默认就会执行的
     if (!options || !options.lazy) {
       _effect.run();
     }
