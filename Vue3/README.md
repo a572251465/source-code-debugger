@@ -29,3 +29,14 @@
 
 ## 2.3 细节点
 [参考](./README.ref.details.md)
+
+# 3. Effect 分析
+
+## 3.1 标识
+
+- `todo lihh effect entry` effect 核心入口
+- `todo lihh effect core` effect 核心实现类
+
+## 3.2 effect 大致实现过程
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/9120fe681cd846659877a34de60e82f1.png#pic_center)

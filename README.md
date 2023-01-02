@@ -32,3 +32,6 @@
 
 - Ref 实现过程
   ![在这里插入图片描述](https://img-blog.csdnimg.cn/a1848b91367a464ab017ef9666460cc2.png#pic_center)
+
+- Effect 实现过程
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/9120fe681cd846659877a34de60e82f1.png#pic_center)
