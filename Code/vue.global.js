@@ -3824,7 +3824,12 @@ var Vue = (function (exports) {
   // initial value for watchers to trigger on undefined initial values
   const INITIAL_WATCHER_VALUE = {};
   // implementation
-  function watch(source, cb, options) {
+
+
+  // todo lihh watch entry
+    function watch(source, cb, options) {
+
+    // 此处表明 watch的第二个参数必修是函数 其实这个将来作为effect的调度回调的
     if (!isFunction(cb)) {
       warn$1(
         `\`watch(fn, options?)\` signature has been moved to a separate API. ` +
@@ -3832,6 +3837,8 @@ var Vue = (function (exports) {
           `supports \`watch(source, cb, options?) signature.`
       );
     }
+
+    // watch核心方法
     return doWatch(source, cb, options);
   }
   function doWatch(
@@ -3865,12 +3872,17 @@ var Vue = (function (exports) {
     let getter;
     let forceTrigger = false;
     let isMultiSource = false;
+    // 是否是ref
     if (isRef(source)) {
       getter = () => source.value;
       forceTrigger = isShallow(source);
+
+      // 是否是reactive 构成
     } else if (isReactive(source)) {
       getter = () => source;
       deep = true;
+
+      // 是否监听多数据源 如果是监听多数据源的话 用数组包裹
     } else if (isArray(source)) {
       isMultiSource = true;
       forceTrigger = source.some((s) => isReactive(s) || isShallow(s));
@@ -3890,6 +3902,8 @@ var Vue = (function (exports) {
             warnInvalidSource(s);
           }
         });
+
+      // 如果是一个函数的话
     } else if (isFunction(source)) {
       if (cb) {
         // getter with cb
@@ -3934,11 +3948,15 @@ var Vue = (function (exports) {
       ? new Array(source.length).fill(INITIAL_WATCHER_VALUE)
       : INITIAL_WATCHER_VALUE;
     const job = () => {
+      // 看看effect 是否是激活的状态
       if (!effect.active) {
         return;
       }
+
+      // 如果有cb方法 直接调用cb方法。 这个cb方法其实就是watch第二个参数。是一个函数
       if (cb) {
         // watch(source, cb)
+        // 重新执行 返回新的值
         const newValue = effect.run();
         if (
           deep ||
@@ -3989,6 +4007,9 @@ var Vue = (function (exports) {
       if (instance) job.id = instance.uid;
       scheduler = () => queueJob(job);
     }
+
+    // watch 本身也是一个effect
+    // getter 是watch函数的第一个参数。 scheduler 表示watch的回调函数
     const effect = new ReactiveEffect(getter, scheduler);
     {
       effect.onTrack = onTrack;
@@ -3996,9 +4017,11 @@ var Vue = (function (exports) {
     }
     // initial run
     if (cb) {
+      // 是否立即执行
       if (immediate) {
         job();
       } else {
+        // 执行getter方法 获取的是oldValue
         oldValue = effect.run();
       }
     } else if (flush === "post") {
@@ -4009,6 +4032,8 @@ var Vue = (function (exports) {
     } else {
       effect.run();
     }
+
+    // 返回的是取消监听
     const unwatch = () => {
       effect.stop();
       if (instance && instance.scope) {

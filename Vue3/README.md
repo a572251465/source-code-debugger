@@ -40,3 +40,13 @@
 ## 3.2 effect 大致实现过程
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/9120fe681cd846659877a34de60e82f1.png#pic_center)
+
+# 4. Watch 分析
+
+## 4.1 标识
+
+- `todo lihh watch entry` watch 核心入口
+
+## 3.2 watch 大致实现过程
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/306c8ddb226c4a6d98b9f75c6f401734.png#pic_center)

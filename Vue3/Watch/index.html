@@ -6,8 +6,25 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Watch</title>
+    <script src="../../Code/vue.global.js"></script>
 </head>
 <body>
+<div id="app"></div>
+<script>
+    const {watch, reactive} = Vue
 
+    const data = reactive({
+      name: "lihh",
+      age: 20
+    })
+    watch(() => data.age, (newValue, oldValue) => {
+      console.log("newValue:" + newValue);
+      console.log("oldValue" + oldValue);
+    })
+
+    setTimeout(() => {
+      data.age++;
+    }, 1000)
+</script>
 </body>
 </html>
