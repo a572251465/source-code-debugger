@@ -47,6 +47,17 @@
 
 - `todo lihh watch entry` watch 核心入口
 
-## 3.2 watch 大致实现过程
+## 4.2 watch 大致实现过程
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/306c8ddb226c4a6d98b9f75c6f401734.png#pic_center)
+
+# 5. Computed 分析
+
+## 5.1 标识
+
+- `todo lihh computed entry` computed 实现入口
+- `todo lihh computed impl` computed 核心类实现入口
+
+## 5.2 computed 大致实现过程
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/f3003bef58e440008461977aa35f0936.png#pic_center)

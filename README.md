@@ -38,3 +38,6 @@
 
 - Watch 实现过程
   ![在这里插入图片描述](https://img-blog.csdnimg.cn/306c8ddb226c4a6d98b9f75c6f401734.png#pic_center)
+
+- Computed 实现过程
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/f3003bef58e440008461977aa35f0936.png#pic_center)

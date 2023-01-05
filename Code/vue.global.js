@@ -1733,13 +1733,18 @@ var Vue = (function (exports) {
   }
 
   var _a;
+  // todo lihh computed impl
   class ComputedRefImpl {
     constructor(getter, _setter, isReadonly, isSSR) {
+      // 表示要触发的setter方法
       this._setter = _setter;
       this.dep = undefined;
       this.__v_isRef = true;
       this[_a] = false;
+      // 表示是否是脏数据
       this._dirty = true;
+      // 此类 也是表明了compute 也是基于effect来实现的
+      // 而给此class 传递的第二个参数就是scheduler方法。 此方法是一个自定义方法
       this.effect = new ReactiveEffect(getter, () => {
         if (!this._dirty) {
           this._dirty = true;
@@ -1753,7 +1758,10 @@ var Vue = (function (exports) {
     get value() {
       // the computed ref may get wrapped by other proxies e.g. readonly() #3376
       const self = toRaw(this);
+      // 收集此effect依赖
       trackRefValue(self);
+      // 刚开始变量【_dirty】 这个一定是true。 这是第一次获取值 在数据不变的情况下 之后的dirty都是false
+      // 如果从第二次都是false的话，都是直接返回缓存中的值
       if (self._dirty || !self._cacheable) {
         self._dirty = false;
         self._value = self.effect.run();
@@ -1769,15 +1777,21 @@ var Vue = (function (exports) {
     let getter;
     let setter;
     const onlyGetter = isFunction(getterOrOptions);
+
+    // 如果getterOrOptions 是一个函数，那么setter函数就是无效的
     if (onlyGetter) {
       getter = getterOrOptions;
       setter = () => {
         console.warn("Write operation failed: computed value is readonly");
       };
     } else {
+
+      // 如果是对象的话，直接获取对象的get/ set方法
       getter = getterOrOptions.get;
       setter = getterOrOptions.set;
     }
+
+    // 表示Computed 实例
     const cRef = new ComputedRefImpl(
       getter,
       setter,
@@ -10769,6 +10783,13 @@ var Vue = (function (exports) {
     return isFunction(value) && "__vccOpts" in value;
   }
 
+  // todo lihh Computed entry
+  /**
+   *
+   * @param getterOrOptions 可以是getter函数 也可以是get/set 方法
+   * @param debugOptions computed 的参数
+   * @returns {ComputedRefImpl}
+   */
   const computed$1 = (getterOrOptions, debugOptions) => {
     // @ts-ignore
     return computed(getterOrOptions, debugOptions, isInSSRComponentSetup);
