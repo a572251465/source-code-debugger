@@ -61,3 +61,16 @@
 ## 5.2 computed 大致实现过程
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/f3003bef58e440008461977aa35f0936.png#pic_center)
+
+# 6. Component 组件创建过程
+
+## 6.1 标识
+
+- `todo lihh createApp entry` 创建dom createApp 入口
+- `todo lihh mount inner impl` 核心API【mount】的实现
+- `todo lihh patch entry` path方法 入口
+- `todo lihh render entry` render 方法入口
+
+## 6.2 computed 大致实现过程
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/76251d6c43294c55be8fe0a0c7a4d720.png#pic_center)

@@ -41,3 +41,6 @@
 
 - Computed 实现过程
   ![在这里插入图片描述](https://img-blog.csdnimg.cn/f3003bef58e440008461977aa35f0936.png#pic_center)
+
+- Component 创建过程
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/76251d6c43294c55be8fe0a0c7a4d720.png#pic_center)

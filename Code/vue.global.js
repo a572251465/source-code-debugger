@@ -6119,6 +6119,8 @@ var Vue = (function (exports) {
     isStateful, // result of bitwise flag comparison
     isSSR = false
   ) {
+
+    // 分为两步：props  是组件props定义的部分。attrs 是使用组件传递数据的部分
     const props = {};
     const attrs = {};
     def(attrs, InternalObjectKey, 1);
@@ -6134,8 +6136,10 @@ var Vue = (function (exports) {
     {
       validateProps(rawProps || {}, props, instance);
     }
+
+    // 此时判断的状态 如果是组件的话
     if (isStateful) {
-      // stateful
+      // props 是浅度响应式
       instance.props = isSSR ? props : shallowReactive(props);
     } else {
       if (!instance.type.props) {
@@ -6815,6 +6819,9 @@ var Vue = (function (exports) {
           context.directives[name] = directive;
           return app;
         },
+
+        // todo lihh mount inner impl
+        // 核心的mount的内部实现
         mount(rootContainer, isHydrate, isSVG) {
           if (!isMounted) {
             // #5571
@@ -6825,6 +6832,18 @@ var Vue = (function (exports) {
                   ` you need to unmount the previous app by calling \`app.unmount()\` first.`
               );
             }
+
+            // 此方法可以生成vdom
+            /***
+             *
+             * {
+             *   setup() {
+             *     return h(...)
+             *   }
+             * }
+             * @type {{__v_skip: boolean, type, suspense: (null|*), ref: (*|(*|{r: *, f, i: null, k: *})[]|{r: *, f, i: null, k: *}|null), slotScopeIds: (null|[string]|*), targetAnchor: (null|*), children: (*[]|*), ssFallback: (null|{__v_skip: boolean, type, suspense: (null|*), ref: (*|(*|{r: *, f, i: null, k: *})[]|{r: *, f, i: null, k: *}|null), slotScopeIds: (null|[string]|*), targetAnchor: (null|*), children: (*[]|*), ssFallback, key: (*|null), scopeId: *, __v_isVNode: boolean, dynamicProps: *, ctx: *, el, shapeFlag: (number|*), dirs: ([]|null|*), ssContent, transition: (null|string|*), props: *, target, component: (null|(function(*, *): (*))|*|RTCIceComponent), patchFlag: (number|number|*), anchor: (null|((name: string) => string)|*), appContext: (null|*), staticCount: (number|*), dynamicChildren: (*|null)}|*|{__v_skip: boolean, type, suspense: (null|*), ref: (*|(*|{r: *, f, i: null, k: *})[]|{r: *, f, i: null, k: *}|null), slotScopeIds: (null|[string]|*), targetAnchor: (null|*), children: (*[]|*), ssFallback, key: (*|null), scopeId: *, __v_isVNode: boolean, dynamicProps: *, ctx: *, el, shapeFlag: (number|*), dirs: ([]|null|*), ssContent, transition: (null|string|*), props: *, target, component: (null|(function(*, *): (*))|*|RTCIceComponent), patchFlag: (number|number|*), anchor: (null|((name: string) => string)|*), appContext: (null|*), staticCount: (number|*), dynamicChildren: (*|null)}), key: null, scopeId: *, __v_isVNode: boolean, dynamicProps: *, ctx: *, el, shapeFlag: (number|*), dirs: ([]|null|*), ssContent: (null|*|{__v_skip: boolean, type, suspense: (null|*), ref: (*|(*|{r: *, f, i: null, k: *})[]|{r: *, f, i: null, k: *}|null), slotScopeIds: (null|[string]|*), targetAnchor: (null|*), children: (*[]|*), ssFallback: (null|{__v_skip: boolean, type, suspense: (null|*), ref: (*|(*|{r: *, f, i: null, k: *})[]|{r: *, f, i: null, k: *}|null), slotScopeIds: (null|[string]|*), targetAnchor: (null|*), children: (*[]|*), ssFallback, key: (*|null), scopeId: *, __v_isVNode: boolean, dynamicProps: *, ctx: *, el, shapeFlag: (number|*), dirs: ([]|null|*), ssContent, transition: (null|string|*), props: *, target, component: (null|(function(*, *): (*))|*|RTCIceComponent), patchFlag: (number|number|*), anchor: (null|((name: string) => string)|*), appContext: (null|*), staticCount: (number|*), dynamicChildren: (*|null)}|*|{__v_skip: boolean, type, suspense: (null|*), ref: (*|(*|{r: *, f, i: null, k: *})[]|{r: *, f, i: null, k: *}|null), slotScopeIds: (null|[string]|*), targetAnchor: (null|*), children: (*[]|*), ssFallback, key: (*|null), scopeId: *, __v_isVNode: boolean, dynamicProps: *, ctx: *, el, shapeFlag: (number|*), dirs: ([]|null|*), ssContent, transition: (null|string|*), props: *, target, component: (null|(function(*, *): (*))|*|RTCIceComponent), patchFlag: (number|number|*), anchor: (null|((name: string) => string)|*), appContext: (null|*), staticCount: (number|*), dynamicChildren: (*|null)}), key: null, scopeId: *, __v_isVNode: boolean, dynamicProps: *, ctx: *, el, shapeFlag: (number|*), dirs: ([]|null|*), ssContent, transition: (null|string|*), props: ({}|*), target, component: (null|(function(*, *): (*))|*|RTCIceComponent), patchFlag: (number|number|*), anchor: (null|((name: string) => string)|*), appContext: (null|*), staticCount: (number|*), dynamicChildren: (*|null)}), transition: (null|string|*), props: ({}|*), target, component: (null|(function(*, *): (*))|*|RTCIceComponent), patchFlag: (number|number|*), anchor: (null|((name: string) => string)|*), appContext: (null|*), staticCount: (number|*), dynamicChildren: (*|null)}|{__v_skip: boolean, type: *, suspense: null, ref, slotScopeIds: null, targetAnchor: null, children: null, ssFallback: null, key, scopeId: null, __v_isVNode: boolean, dynamicProps: null, ctx: null, el: null, dirs: null, shapeFlag: number, ssContent: null, transition: null, props: null, target: null, component: null, patchFlag: number, anchor: null, appContext: null, staticCount: number, dynamicChildren: null}}
+             */
+            // 生成虚拟dom时。 将rootComponent作为type 来返回虚拟dom的
             const vnode = createVNode(rootComponent, rootProps);
             // store app context on the root VNode.
             // this will be set on the root instance on initial mount.
@@ -6838,6 +6857,8 @@ var Vue = (function (exports) {
             if (isHydrate && hydrate) {
               hydrate(vnode, rootContainer);
             } else {
+
+              // 开始执行render函数
               render(vnode, rootContainer, isSVG);
             }
             isMounted = true;
@@ -7601,6 +7622,10 @@ var Vue = (function (exports) {
     } = options;
     // Note: functions inside this closure should use `const xxx = () => {}`
     // style in order to prevent being inlined by minifiers.
+
+    // todo lihh patch entry
+    // n1 是旧的dom
+    // n2 是新的dom
     const patch = (
       n1,
       n2,
@@ -7612,10 +7637,12 @@ var Vue = (function (exports) {
       slotScopeIds = null,
       optimized = isHmrUpdating ? false : !!n2.dynamicChildren
     ) => {
+      // 如果新旧dom 相同的话 没有任何变化 直接返回
       if (n1 === n2) {
         return;
       }
       // patching & not same type, unmount old tree
+      // 如果n1存在vdom。但是vNodeType 不同。说明不是同类型的dom 直接设置为空。重新挂载
       if (n1 && !isSameVNodeType(n1, n2)) {
         anchor = getNextHostNode(n1);
         unmount(n1, parentComponent, parentSuspense, true);
@@ -7625,6 +7652,8 @@ var Vue = (function (exports) {
         optimized = false;
         n2.dynamicChildren = null;
       }
+
+      // 此处的ref 是组件的ref  此处就是ref的实现原理
       const { type, ref, shapeFlag } = n2;
       switch (type) {
         case Text:
@@ -7667,6 +7696,7 @@ var Vue = (function (exports) {
               optimized
             );
           } else if (shapeFlag & 6 /* ShapeFlags.COMPONENT */) {
+            // 解析组件
             processComponent(
               n1,
               n2,
@@ -8344,6 +8374,8 @@ var Vue = (function (exports) {
         if (n2.shapeFlag & 512 /* ShapeFlags.COMPONENT_KEPT_ALIVE */) {
           parentComponent.ctx.activate(n2, container, anchor, isSVG, optimized);
         } else {
+
+          // 此处的逻辑表示挂在组件
           mountComponent(
             n2,
             container,
@@ -8358,6 +8390,8 @@ var Vue = (function (exports) {
         updateComponent(n1, n2, optimized);
       }
     };
+
+    // 开始挂载组件
     const mountComponent = (
       initialVNode,
       container,
@@ -8367,6 +8401,7 @@ var Vue = (function (exports) {
       isSVG,
       optimized
     ) => {
+      // 此处用来生成组件实例
       const instance = (initialVNode.component = createComponentInstance(
         initialVNode,
         parentComponent,
@@ -8388,6 +8423,8 @@ var Vue = (function (exports) {
         {
           startMeasure(instance, `init`);
         }
+
+        // 执行setup 组件
         setupComponent(instance);
         {
           endMeasure(instance, `init`);
@@ -8458,6 +8495,8 @@ var Vue = (function (exports) {
       isSVG,
       optimized
     ) => {
+
+      // 此处的effect的是渲染effect。此effect的作用就是为了负责渲染的
       const componentUpdateFn = () => {
         if (!instance.isMounted) {
           let vnodeHook;
@@ -8510,6 +8549,8 @@ var Vue = (function (exports) {
             {
               startMeasure(instance, `render`);
             }
+
+            // 表示开始渲染节点 赋值给instance.subTree 为了下次执行更新方便
             const subTree = (instance.subTree = renderComponentRoot(instance));
             {
               endMeasure(instance, `render`);
@@ -8517,6 +8558,8 @@ var Vue = (function (exports) {
             {
               startMeasure(instance, `patch`);
             }
+
+            // 此处开始渲染循环渲染了
             patch(
               null,
               subTree,
@@ -8645,12 +8688,15 @@ var Vue = (function (exports) {
           }
         }
       };
-      // create reactive effect for rendering
+
+      // 执行的effect
       const effect = (instance.effect = new ReactiveEffect(
         componentUpdateFn,
         () => queueJob(update),
         instance.scope // track it in component's effect scope
       ));
+
+      // 其实执行【effect.run()】 相当于执行componentUpdateFn了 因为这个函数会赋值给fn
       const update = (instance.update = () => effect.run());
       update.id = instance.uid;
       // allowRecurse
@@ -8665,6 +8711,8 @@ var Vue = (function (exports) {
           : void 0;
         update.ownerInstance = instance;
       }
+
+      // 此处表示初次渲染
       update();
     };
     const updateComponentPreRender = (instance, nextVNode, optimized) => {
@@ -9351,12 +9399,18 @@ var Vue = (function (exports) {
       }
       return hostNextSibling(vnode.anchor || vnode.el);
     };
+
+    // todo lihh render entry
     const render = (vnode, container, isSVG) => {
+
+      // 虚拟dom为 null时 表示卸载
       if (vnode == null) {
         if (container._vnode) {
           unmount(container._vnode, null, null, true);
         }
       } else {
+
+        // 这一步是新旧vdom的对比
         patch(
           container._vnode || null,
           vnode,
@@ -10362,9 +10416,12 @@ var Vue = (function (exports) {
 
   const emptyAppContext = createAppContext();
   let uid$1 = 0;
+
+  // 创建组件实例
   function createComponentInstance(vnode, parent, suspense) {
     const type = vnode.type;
     // inherit parent app context - or - if root, adopt from root vnode
+    // 如果存在父类，使用父类的appContext 反之使用自己的
     const appContext =
       (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
     const instance = {
@@ -10384,6 +10441,7 @@ var Vue = (function (exports) {
       exposed: null,
       exposeProxy: null,
       withProxy: null,
+      // 如果父类的parent存在的话 从父类拿过来  反之就是自己的
       provides: parent ? parent.provides : Object.create(appContext.provides),
       accessCache: null,
       renderCache: [],
@@ -10472,7 +10530,10 @@ var Vue = (function (exports) {
     isInSSRComponentSetup = isSSR;
     const { props, children } = instance.vnode;
     const isStateful = isStatefulComponent(instance);
+
+    // init 解析props
     initProps(instance, props, isStateful, isSSR);
+    // init 解析slot
     initSlots(instance, children);
     const setupResult = isStateful
       ? setupStatefulComponent(instance, isSSR)
@@ -10509,8 +10570,8 @@ var Vue = (function (exports) {
     }
     // 0. create render proxy property access cache
     instance.accessCache = Object.create(null);
-    // 1. create public instance / render proxy
-    // also mark it raw so it's never observed
+
+    // 其实这一步可以理解为就是this指向
     instance.proxy = markRaw(
       new Proxy(instance.ctx, PublicInstanceProxyHandlers)
     );
@@ -10520,10 +10581,14 @@ var Vue = (function (exports) {
     // 2. call setup()
     const { setup } = Component;
     if (setup) {
+      // 此判断可以确定的是 根据参数的个数 来确定this指向
       const setupContext = (instance.setupContext =
         setup.length > 1 ? createSetupContext(instance) : null);
+
+      // 此时设置当前执行组件的实例。 也是为生命周期钩子做准备
       setCurrentInstance(instance);
       pauseTracking();
+      // 此时执行setup  返回setup返回值
       const setupResult = callWithErrorHandling(
         setup,
         instance,
@@ -10532,6 +10597,8 @@ var Vue = (function (exports) {
       );
       resetTracking();
       unsetCurrentInstance();
+
+      // 此处用来处理异步组件。之后会进行分析
       if (isPromise(setupResult)) {
         setupResult.then(unsetCurrentInstance, unsetCurrentInstance);
         if (isSSR) {
@@ -10568,9 +10635,11 @@ var Vue = (function (exports) {
     }
   }
   function handleSetupResult(instance, setupResult, isSSR) {
+    // 如果setup返回的值 是一个函数的话
     if (isFunction(setupResult)) {
       // setup returned an inline render function
       {
+        // 将结果赋值到实例的 render属性上
         instance.render = setupResult;
       }
     } else if (isObject(setupResult)) {
@@ -12784,14 +12853,23 @@ var Vue = (function (exports) {
   const hydrate = (...args) => {
     ensureHydrationRenderer().hydrate(...args);
   };
+
+  // todo lihh createApp entry
   const createApp = (...args) => {
+
+    // 通过一个高级函数 来返回app的实例。 app实例中包括全局函数 以及Context 上下文
     const app = ensureRenderer().createApp(...args);
     {
       injectNativeTagCheck(app);
       injectCompilerOptionsCheck(app);
     }
+
+    // 表示将 app实例返回的mount先 备份。
     const { mount } = app;
+    // 定义自己的mount方法 用户使用的时候使用的是自己定义的mount
     app.mount = (containerOrSelector) => {
+
+      // 此方法 可以判断是否是常规dom 或是 dom是否存在
       const container = normalizeContainer(containerOrSelector);
       if (!container) return;
       const component = app._component;
@@ -12804,6 +12882,8 @@ var Vue = (function (exports) {
       }
       // clear content before mounting
       container.innerHTML = "";
+
+      // 开始调用mount方法
       const proxy = mount(container, false, container instanceof SVGElement);
       if (container instanceof Element) {
         container.removeAttribute("v-cloak");
