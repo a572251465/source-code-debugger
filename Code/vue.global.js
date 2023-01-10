@@ -4496,6 +4496,8 @@ var Vue = (function (exports) {
   }
 
   const isAsyncWrapper = (i) => !!i.type.__asyncLoader;
+  
+  // todo lihh asyncComponent impl
   function defineAsyncComponent(source) {
     if (isFunction(source)) {
       source = { loader: source };
@@ -4510,6 +4512,7 @@ var Vue = (function (exports) {
       onError: userOnError,
     } = source;
     let pendingRequest = null;
+    // 表示resolve 返回的组件
     let resolvedComp;
     let retries = 0;
     const retry = () => {
@@ -4517,11 +4520,14 @@ var Vue = (function (exports) {
       pendingRequest = null;
       return load();
     };
+
+    // 执行加载组件的方法
     const load = () => {
       let thisRequest;
       return (
         pendingRequest ||
         (thisRequest = pendingRequest =
+          // 执行函数 会返回一个promise
           loader()
             .catch((err) => {
               err = err instanceof Error ? err : new Error(String(err));
@@ -4535,6 +4541,7 @@ var Vue = (function (exports) {
                 throw err;
               }
             })
+            // 正确的返回结果
             .then((comp) => {
               if (thisRequest !== pendingRequest && pendingRequest) {
                 return pendingRequest;
@@ -4546,6 +4553,7 @@ var Vue = (function (exports) {
                 );
               }
               // interop module default
+              // es module format
               if (
                 comp &&
                 (comp.__esModule || comp[Symbol.toStringTag] === "Module")
@@ -4597,6 +4605,8 @@ var Vue = (function (exports) {
                   : null;
             });
         }
+
+        // 此处用来收集依赖
         const loaded = ref(false);
         const error = ref();
         const delayed = ref(!!delay);
@@ -4616,6 +4626,7 @@ var Vue = (function (exports) {
             }
           }, timeout);
         }
+        // 执行load 加载组件
         load()
           .then(() => {
             loaded.value = true;
@@ -10541,6 +10552,8 @@ var Vue = (function (exports) {
     isInSSRComponentSetup = false;
     return setupResult;
   }
+
+  // 此方法可以执行setup 并且返回setup的值
   function setupStatefulComponent(instance, isSSR) {
     var _a;
     const Component = instance.type;
@@ -10598,7 +10611,7 @@ var Vue = (function (exports) {
       resetTracking();
       unsetCurrentInstance();
 
-      // 此处用来处理异步组件。之后会进行分析
+      // 如果是返回的promise  在这里处理
       if (isPromise(setupResult)) {
         setupResult.then(unsetCurrentInstance, unsetCurrentInstance);
         if (isSSR) {
@@ -10611,8 +10624,8 @@ var Vue = (function (exports) {
               handleError(e, instance, 0 /* ErrorCodes.SETUP_FUNCTION */);
             });
         } else {
-          // async setup returned Promise.
-          // bail here and wait for re-entry.
+
+          // 非ssr 执行此处
           instance.asyncDep = setupResult;
           if (!instance.suspense) {
             const name =

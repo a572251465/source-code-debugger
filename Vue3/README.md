@@ -74,3 +74,13 @@
 ## 6.2 computed 大致实现过程
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/76251d6c43294c55be8fe0a0c7a4d720.png#pic_center)
+
+# 7. AsyncComponent 组件创建过程
+
+## 7.1 标识
+
+- `todo lihh asyncComponenet impl` AsyncDefineComponent入口
+
+## 7.2 AsyncComponent 大致实现过程
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2e65c84dd1ca4ef2b2c0f2f1b4d7dffc.png#pic_center)

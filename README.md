@@ -44,3 +44,6 @@
 
 - Component 创建过程
   ![在这里插入图片描述](https://img-blog.csdnimg.cn/76251d6c43294c55be8fe0a0c7a4d720.png#pic_center)
+
+- AsyncComponent 渲染过程
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/2e65c84dd1ca4ef2b2c0f2f1b4d7dffc.png#pic_center)

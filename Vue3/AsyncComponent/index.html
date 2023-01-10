@@ -1,13 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
-</head>
-<body>
+    <script src="../../Code/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      const { defineAsyncComponent, reactive, h, createApp } = Vue;
 
-</body>
+      const data = reactive({
+        name: "lihh",
+        age: 20,
+      });
+
+      debugger
+      const App = defineAsyncComponent(() => {
+        return new Promise((resolve) => {
+          resolve(
+            h("div", [
+              h("span", `我的姓名是:${data.name}`),
+              h("span", `我的年龄是:${data.age}`),
+            ])
+          );
+        });
+      });
+
+      createApp(App).mount("#app");
+    </script>
+  </body>
 </html>
