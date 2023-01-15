@@ -7,7 +7,7 @@
 
 - 优秀的应届毕业生
 - 对源码方面执着的人
-- 工作3~4年的前端人员
+- 工作 3~4 年的前端人员
 
 ## 2. 目的
 
@@ -23,33 +23,8 @@
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/6e97524a5a0041cdbff7c40ec3e74023.png#pic_center)
 
-### 分析 Vue3 解决问题
-
-- 对于初次学习源码的人，看源码比较困难，不知道如何下手。
-- 对于每个知识点不能够深入的掌握
-
-> 通过这篇源码的学习，会分析每个工作中能用到知识点。并且会以demo为例，进行源码讲解
+### Vue3 源码分析
 
 [详细的源码分析](./Vue3/README.md)
 
-例如：
-- Reactive 实例过程
-    ![在这里插入图片描述](https://img-blog.csdnimg.cn/3e7f2921d5cd48b1bec7622b64e55d96.png)
-
-- Ref 实现过程
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/a1848b91367a464ab017ef9666460cc2.png#pic_center)
-
-- Effect 实现过程
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/9120fe681cd846659877a34de60e82f1.png#pic_center)
-
-- Watch 实现过程
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/306c8ddb226c4a6d98b9f75c6f401734.png#pic_center)
-
-- Computed 实现过程
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/f3003bef58e440008461977aa35f0936.png#pic_center)
-
-- Component 创建过程
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/76251d6c43294c55be8fe0a0c7a4d720.png#pic_center)
-
-- AsyncComponent 渲染过程
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/2e65c84dd1ca4ef2b2c0f2f1b4d7dffc.png#pic_center)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/76251d6c43294c55be8fe0a0c7a4d720.png#pic_center)
