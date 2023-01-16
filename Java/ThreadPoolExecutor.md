@@ -103,13 +103,39 @@ private static int ctlOf(int rs, int wc) { return rs | wc; }
 <br />
 
 1. `private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));`
-   AtomicInteger 是基于CAS进行运算。可以保证数据的原子性。
+   <br />AtomicInteger 是基于CAS进行运算。可以保证数据的原子性。
 
 2. `private static final int COUNT_BITS = Integer.SIZE - 3;`
-   Integer.SIZE 表示一个int类型对应的比特位的长度。 其实就是32，所以COUNT_BITS 就是29。
+   <br />Integer.SIZE 表示一个int类型对应的比特位的长度。 其实就是32，所以COUNT_BITS 就是29。
 
 3. `private static final int CAPACITY   = (1 << COUNT_BITS) - 1;`
-   ![在这里插入图片描述](https://img-blog.csdnimg.cn/8fbf1c27c8874d25b8a3ce6b27ad39bf.png)
+   <br />![在这里插入图片描述](https://img-blog.csdnimg.cn/8fbf1c27c8874d25b8a3ce6b27ad39bf.png)
+   <br /> 其结果就是`00011111 11111111 11111111 11111111`
+
+4. `RUNNING, SHUTDOWN, STOP, TIDYING, TERMINATED`
+    <br/> 表示线程的几种状态
+    ```java
+    // 111：代表RUNNING状态，RUNNING可以处理任务，并且处理阻塞队列中的任务。
+   private static final int RUNNING    = -1 << COUNT_BITS;
+   
+   // 000：代表SHUTDOWN状态，不会接收新任务，正在处理的任务正常进行，阻塞队列的任务也会做完。
+   private static final int SHUTDOWN   =  0 << COUNT_BITS;
+   
+   // 001：代表STOP状态，不会接收新任务，正在处理任务的线程会被中断，阻塞队列的任务一个不管
+   private static final int STOP       =  1 << COUNT_BITS;
+   
+   // 010：代表TIDYING状态，这个状态是否SHUTDOWN或者STOP转换过来的，代表当前线程池马上关闭，就是过渡状态。
+   private static final int TIDYING    =  2 << COUNT_BITS;
+   
+   // 011：代表TERMINATED状态，这个状态是TIDYING状态转换过来的，转换过来只需要执行一个terminated方法。
+   private static final int TERMINATED =  3 << COUNT_BITS;
+    ```
+
+5. `private static int runStateOf(int c)     { return c & ~CAPACITY; }`
+    <br />  基于&运算的特点，保证只会拿到ctl高三位的值。
+
+6. `private static int workerCountOf(int c)  { return c & CAPACITY; }`
+   <br />  基于&运算的特点，保证只会拿到ctl低29位的值。
 
 ### 核心参数解析
 
@@ -170,3 +196,48 @@ public ThreadPoolExecutor(int corePoolSize,
 
 ### 方法execute 解析
 
+![在这里插入图片描述](https://img-blog.csdnimg.cn/184e3f232973404d9729cd1b3fb63297.png#pic_center)
+
+```java
+// 此方法表示执行线程的方法
+public void execute(Runnable command) {
+    // 首先命令 不能为空。 反之报空指针异常
+    if (command == null)
+        throw new NullPointerException();
+    // 工作线程的值
+    int c = ctl.get();
+    // 如果工作者线程 < 核心者线程
+    if (workerCountOf(c) < corePoolSize) {
+        // 添加到工作者线程中 如果添加成功返回true 反之直接返回false
+        // 如果第二个参数是true 表示核心工作者线程
+        if (addWorker(command, true))
+            return;
+        // 如果执行到此处，表示上述判断没有添加成功。那么ctl一定是发生了某种变化，所以需要重新获取值
+        c = ctl.get();
+    }
+
+    // 如果线程池状态是RUNNING && 将命令添加到阻塞队列中
+    if (isRunning(c) && workQueue.offer(command)) {
+        // 如果任务添加到阻塞队列成功，走if内部
+        // 如果任务在扔到阻塞队列之前，线程池状态突然改变了。
+        // 重新获取ctl
+        int recheck = ctl.get();
+        // 如果线程池的状态不是RUNNING，将任务从阻塞队列移除，
+        if (! isRunning(recheck) && remove(command))
+            reject(command);
+
+        // 在这，说明阻塞队列有我刚刚放进去的任务
+        // 查看一下工作线程数是不是0个
+        // 如果工作线程为0个，需要添加一个非核心工作线程去处理阻塞队列中的任务
+        else if (workerCountOf(recheck) == 0)
+            // 为了避免阻塞队列中的任务饥饿，添加一个非核心工作线程去处理
+            addWorker(null, false);
+    }
+    // 任务添加到阻塞队列失败
+    // 构建一个非核心工作线程
+    // 如果添加非核心工作线程成功，直接完事，告辞
+    else if (!addWorker(command, false))
+        // 添加失败，执行决绝策略
+        reject(command);
+}
+```
