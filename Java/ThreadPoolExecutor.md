@@ -338,3 +338,160 @@ private boolean addWorker(Runnable firstTask, boolean core) {
     return workerStarted;
 }
 ```
+
+### Worker 解析
+
+```java
+// 表示work 类
+private final class Worker
+    extends AbstractQueuedSynchronizer
+    implements Runnable
+{
+    private static final long serialVersionUID = 6138294804551838833L;
+
+    // 通过工厂创建的线程
+    final Thread thread;
+    // 表示第一个任务。其实就是构造函数传递的任务
+    Runnable firstTask;
+    // 统计work 执行的任务
+    volatile long completedTasks;
+
+    // 表示Worker 类的构造函数
+    Worker(Runnable firstTask) {
+        setState(-1);
+        // task赋值
+        this.firstTask = firstTask;
+        // 线程赋值
+        this.thread = getThreadFactory().newThread(this);
+    }
+
+    public void run() {
+        runWorker(this);
+    }
+}
+```
+
+### 函数runWorker 解析
+
+```java
+// 表示运行工作worker
+final void runWorker(Worker w) {
+    // 表示当前线程
+    Thread wt = Thread.currentThread();
+    // 待执行的task 任务
+    Runnable task = w.firstTask;
+    // 任务置空
+    w.firstTask = null;
+    // 去锁
+    w.unlock();
+    // 是否异常结束
+    boolean completedAbruptly = true;
+    try {
+        // task是否有任务 || 如果没有任务的话 获取最新的任务 而且不能为null
+        while (task != null || (task = getTask()) != null) {
+            // 加锁
+            w.lock();
+
+            // 比较ctl >= STOP,如果满足找个状态，说明线程池已经到了STOP状态甚至已经要凉凉了
+            // 线程池到STOP状态，并且当前线程还没有中断，确保线程是中断的，进到if内部执行中断方法
+            // if(runStateAtLeast(ctl.get(), STOP) && !wt.isInterrupted()) {中断线程}
+            // 如果线程池状态不是STOP，确保线程不是中断的。
+            // 如果发现线程中断标记位是true了，再次查看线程池状态是大于STOP了，再次中断线程
+            // 这里其实就是做了一个事情，如果线程池状态 >= STOP，确保线程中断了。
+
+            // 1. ctl >= stop && !wt.isInterrupted() 线程的状态已经属于STOP以上了。 而且没有打中断标记
+            // 2. 如果发现线程中断标记位是true了，再次查看线程池状态是大于STOP了，再次中断线程
+            if (
+                (runStateAtLeast(ctl.get(), STOP) ||
+                 (Thread.interrupted() &&
+                  runStateAtLeast(ctl.get(), STOP))) && !wt.isInterrupted()
+                )
+                wt.interrupt();
+            try {
+                // 内部方法是空方法 属于自定义的方法
+                beforeExecute(wt, task);
+                Throwable thrown = null;
+                try {
+                    // 运行任务
+                    task.run();
+                } catch (RuntimeException x) {
+                    thrown = x; throw x;
+                } catch (Error x) {
+                    thrown = x; throw x;
+                } catch (Throwable x) {
+                    thrown = x; throw new Error(x);
+                } finally {
+                    afterExecute(task, thrown);
+                }
+            } finally {
+                task = null;
+                // works 处理的统计任务 ++
+                w.completedTasks++;
+                w.unlock();
+            }
+        }
+        completedAbruptly = false;
+    } finally {
+        processWorkerExit(w, completedAbruptly);
+    }
+}
+```
+
+### 方法getTask 解析
+
+```java
+private Runnable getTask() {
+    // 延迟
+    boolean timedOut = false; // Did the last poll() time out?
+
+    for (;;) {
+        // ctl 状态。 高三位表示线程池状态 低29位表示线程数
+        int c = ctl.get();
+        // 线程池状态
+        int rs = runStateOf(c);
+
+        // 如果状态 >= STOP || 工作队列是空的 就没必要获取任务了
+        if (rs >= SHUTDOWN && (rs >= STOP || workQueue.isEmpty())) {
+            // 将ctl - 1，扣掉一个工作线程
+            decrementWorkerCount();
+            return null;
+        }
+
+        // 基于ctl拿到工作线程个数
+        int wc = workerCountOf(c);
+
+        // allowCoreThreadTimeOut 字段表示是否开启了 核心线程延迟
+        // wc > corePoolSize 表示工作线程数 > 核心线程数
+        boolean timed = allowCoreThreadTimeOut || wc > corePoolSize;
+
+        // 如果工作线程个数，大于最大线程数。（一般情况不会满足），把他看成false
+        // 第二个判断代表，只要工作线程数小于等于核心线程数，必然为false
+        // 即便工作线程个数大于核心线程数了，此时第一次循环也不会为true，因为timedOut默认值是false
+        // 考虑第二次循环了，因为循环内部必然有修改timeOut的位置
+        if ((wc > maximumPoolSize || (timed && timedOut))
+            && (wc > 1 || workQueue.isEmpty())) {
+            if (compareAndDecrementWorkerCount(c))
+                return null;
+            continue;
+        }
+
+        try {
+            // 如果是核心线程，timed是false，如果是非核心线程，timed就是true
+            Runnable r = timed ?
+                // 如果是非核心，走poll方法，拿任务，等待一会
+                workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) :
+                // 如果是核心，走take方法，死等。
+                workQueue.take();
+            if (r != null)
+                return r;
+            timedOut = true;
+        } catch (InterruptedException retry) {
+            timedOut = false;
+        }
+    }
+}
+```
+
+### 一次核心工作者线程执行过程
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/62f66770130741b4a3edd58e82946a6e.png#pic_center)
