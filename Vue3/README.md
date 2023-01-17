@@ -84,3 +84,15 @@
 ## 7.2 AsyncComponent 大致实现过程
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/2e65c84dd1ca4ef2b2c0f2f1b4d7dffc.png#pic_center)
+
+# 8. slot 创建过程
+
+## 8.1 标识
+
+- `todo lihh patch entry` 这里增加patch 渲染入口
+- `todo lihh resolve slots` 将解析slots 赋值给组件的实例
+- `todo lihh h entry` 表示渲染虚拟dom h函数的入口
+
+## 8.2 slots 大致实现过程
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/85e1758a6fed47e888c1a4685212b47c.png#pic_center)

@@ -241,3 +241,100 @@ public void execute(Runnable command) {
         reject(command);
 }
 ```
+
+### 方法addWorker 解析
+
+```java
+// 添加工作者线程的方法
+// firstTask 添加的任务
+// core 表示是否是核心线程
+private boolean addWorker(Runnable firstTask, boolean core) {
+    // 此处表示双向循环 退出标记
+    retry:
+    for (;;) {
+        // 线程池标记数
+        int c = ctl.get();
+        // 获取高三位的值 其实就是获取的线程池状态。 其实高三位来表示线程池状态
+        int rs = runStateOf(c);
+
+        // 判断线程池的状态是否大于等于SHUTDOWN，如果满足，说明线程池不是RUNNING
+        if (rs >= SHUTDOWN &&
+            // 如果这三个条件都满足，就代表是要添加非核心工作线程去处理阻塞队列任务
+            // 如果三个条件有一个没满足，返回false，配合!，就代表不需要添加
+            ! (rs == SHUTDOWN &&
+               firstTask == null &&
+               ! workQueue.isEmpty()))
+            return false;
+
+        for (;;) {
+            // 获取工作线程数
+            int wc = workerCountOf(c);
+            // 如果线程池的个数 比 最大值CAPACITY 还大的话 直接return false
+            // 判断是否核心线程 如果比核心 或是 设置最大线程大的话 return false
+            if (wc >= CAPACITY ||
+                wc >= (core ? corePoolSize : maximumPoolSize))
+                return false;
+            // 针对ctl进行 + 1，采用CAS的方式
+            if (compareAndIncrementWorkerCount(c))
+                break retry;
+            c = ctl.get();  // Re-read ctl
+            // 判断重新获取到的ctl中，表示的线程池状态跟之前的是否有区别
+            // 如果状态不一样，说明有变化，重新的去判断线程池状态
+            if (runStateOf(c) != rs)
+                continue retry;
+            // else CAS failed due to workerCount change; retry inner loop
+        }
+    }
+
+    // 工作者线程是否启动
+    boolean workerStarted = false;
+    // 工作者线程是否添加
+    boolean workerAdded = false;
+    // Worker 实例
+    Worker w = null;
+    try {
+        // 实例化 一个工作实例
+        w = new Worker(firstTask);
+        // 获取实例化后的线程
+        final Thread t = w.thread;
+        // 线程 必须 不能为null
+        if (t != null) {
+            // 获取锁实例
+            final ReentrantLock mainLock = this.mainLock;
+            // 加锁
+            mainLock.lock();
+            try {
+                // 通过高三位 获取线程池状态
+                int rs = runStateOf(ctl.get());
+
+                // rs < SHUTDOWN 满足的话 表示线程池是RUNNING 状态
+                if (rs < SHUTDOWN ||
+                    // 线程状态处于SHUTDOWN状态  && firstTask 为null
+                    (rs == SHUTDOWN && firstTask == null)) {
+                    // 如果线程池已经处于 激活状态 直接报异常
+                    if (t.isAlive())
+                        throw new IllegalThreadStateException();
+                    // 添加工作者线程
+                    workers.add(w);
+                    int s = workers.size();
+                    if (s > largestPoolSize)
+                        largestPoolSize = s;
+                    workerAdded = true;
+                }
+            } finally {
+                mainLock.unlock();
+            }
+
+            // 如果工作者线程 添加成功后 启动线程
+            if (workerAdded) {
+                t.start();
+                workerStarted = true;
+            }
+        }
+    } finally {
+        if (! workerStarted)
+            addWorkerFailed(w);
+    }
+    return workerStarted;
+}
+```

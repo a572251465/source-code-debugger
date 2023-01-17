@@ -1,13 +1,47 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Slot</title>
-</head>
-<body>
+    <script src="../../Code/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      const { reactive, defineComponent, createApp, h } = Vue;
 
-</body>
+      const child = defineComponent({
+        setup(props, ctx) {
+          return () =>
+            h("div", null, [
+              h("div", null, h("div", ctx.slots.default())),
+              h("div", null, h("div", ctx.slots.foo())),
+              h("div", null, h("div", ctx.slots.bar())),
+            ]);
+        },
+      });
+
+      const parent = defineComponent({
+        setup() {
+          return () =>
+            h(
+              "div",
+              null,
+              h(child, null, {
+                default: () => "default slot",
+                foo: () => h("div", "foo"),
+                bar: () => [h("span", "one"), h("span", "two")],
+              })
+            );
+        },
+      });
+
+      createApp(parent).mount("#app");
+    </script>
+  </body>
 </html>

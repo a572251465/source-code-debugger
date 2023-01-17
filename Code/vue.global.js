@@ -9422,6 +9422,7 @@ var Vue = (function (exports) {
       } else {
 
         // 这一步是新旧vdom的对比
+        // todo lihh patch entry
         patch(
           container._vnode || null,
           vnode,
@@ -10545,6 +10546,20 @@ var Vue = (function (exports) {
     // init 解析props
     initProps(instance, props, isStateful, isSSR);
     // init 解析slot
+    // todo lihh resolve slots
+    /**
+      *              h(child, null, {
+      *                 default: () => "default slot",
+      *                 foo: () => h("div", "foo"),
+      *                 bar: () => [h("span", "one"), h("span", "two")],
+      *               })
+     *
+     *               上述代码中 第三个参数会解析为虚拟dom的children
+     *               而函数initSlots的目的就是为了 将children内容 赋值到instance. slots上
+     *
+     *               当前实例instance 会作为组件child的this指向，以及setup第二个参数。
+     *               我们在渲染的过程中可以使用ctx.slots.default()/ ctx.slots.bar() 来获取值
+     */
     initSlots(instance, children);
     const setupResult = isStateful
       ? setupStatefulComponent(instance, isSSR)
@@ -11032,6 +11047,7 @@ var Vue = (function (exports) {
   }
 
   // Actual implementation
+  // todo lihh h entry
   function h(type, propsOrChildren, children) {
     const l = arguments.length;
     if (l === 2) {
