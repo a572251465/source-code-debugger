@@ -6,7 +6,7 @@
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/983a2473f0524ac2b8c11c8e9b3a626f.png)
 
-其实通过上述截图可以看到，其实整个 gulp 什么都没有都是由一个一个插件组成的。上述的截图绘制了重要的插件，更详细的插件可以观看源码。
+其实通过上述截图可以看到，其实整个 gulp 内部什么逻辑都没有，都是由一个一个插件组成的。上述的截图绘制了重要的插件，更详细的插件可以观看源码。
 
 ## 简单实例
 
@@ -78,8 +78,8 @@ exports.default = series("build");
 
 > 上述 通过几段 js 代码来实现了 task 任务注册逻辑，接下来讲述下源码中是如何实现 task 的。实现 task 大体分为两种方式：
 
-- 通过调用 task 任务 来实现任务注册
-- 通过`gulpfile.js` 中导出方法 来实现自动注册
+- 通过调用 task API 来实现任务注册
+- 通过`gulpfile.js(exports.xxx = xx)` 中导出方法 来实现自动注册
 
 ### 手动注册 task 任务
 
@@ -106,7 +106,7 @@ exports.default = series("build");
 
 - 通过脚手架【gulp-cli】来读取 gulpfile.js 文件
 - 执行的位置【`gulp-cli/lib/versioned/^4.0.0/index.js`】
-- 然后通过代码`registerExports(gulpInst, exported);` 注册到实例上
+- 然后通过代码`registerExports(gulpInst, exported);` 注册到gulp实例上
   - `gulpInst` 其实就是 gulp 实例
   - `exported` 其实就是导出对象`exports`
 - 执行对应注册 task 的 js。如：`register-exports.js`
@@ -125,9 +125,9 @@ exports.default = series("build");
   - 步骤 2：`var args = normalizeArgs(this._registry, arguments);` 执行左侧代码。目的是为了将函数格式化。格式化的方式大致分为以下两种：
     - 第一种：如果参数是函数，直接返回函数
     - 第二种：如果参数是字符串，通过\_registry.tasks 找到对应名称的 函数，并且返回
-  - 步骤 3：`var fn = create(args, extensions);` 将上述步骤 2 的参数给 create 方法，返回函数需要的参数
+  - 步骤 3：`var fn = create(args, extensions);` 将上述步骤 2 的参数给 create 方法，返回需要的函数
 - 这里说下 函数`series` 返回 fn 函数后 具体的逻辑：
-  - 上述【步骤 2】中会返回一个函数数组，数组会传递到返回函数中。 如下图
+  - 上述【步骤 2】中会返回一个函数数组，数组会传递到mapSeries函数中。 如下图
   - ![在这里插入图片描述](https://img-blog.csdnimg.cn/c4868590274b4fbd8af84e651a26b0c5.png)
   - 然后会执行核心方法【mapSeries】(位置: `3.mapSeries.js` 内容)。
   - 既然 mapSeries 的第一个参数 args 是一个函数数组，那么首先以 index = 0 为条件，获取第一个函数
