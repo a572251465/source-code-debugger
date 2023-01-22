@@ -50,3 +50,9 @@
 [详细的源码分析](./Gulp/Gulp.Task.README.md)
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/7c8e2ff1fdeb49b1bcb1bf622befcac0.png#pic_center)
+
+### ArrayList.grow 扩容机制 源码分析
+
+[ArrayList.grow 扩容机制](./Java/ArrayList.learning.md)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/774bd84b50094d71b952c362f10a9bb1.png#pic_center)
