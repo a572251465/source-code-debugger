@@ -1,4 +1,4 @@
-<h1 align="center">ArrayList 实现原理</h1>
+<h1 align="center">ArrayList 实现原理 以及扩容原理</h1>
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/774bd84b50094d71b952c362f10a9bb1.png#pic_center)
 
