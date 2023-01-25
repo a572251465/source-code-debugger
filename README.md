@@ -56,3 +56,9 @@
 [ArrayList.grow 扩容机制](./Java/ArrayList.learning.md)
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/774bd84b50094d71b952c362f10a9bb1.png#pic_center)
+
+### HashMap 扩容机制 源码分析
+
+[HashMap 扩容机制 以及源码分析](./Java/HashMap.learning.md)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/d026eff5f4d647a6921c19b5fc5807b7.png#pic_center)
