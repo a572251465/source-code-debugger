@@ -26,7 +26,7 @@
   - [Koa-bodyparser 源码分析](https://github.com/a572251465/source-code-debugger#koa-bodyparser-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90)
   - [Koa-Router 源码分析](https://github.com/a572251465/source-code-debugger#koa-router-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90)
   - [Gulp.Task 源码分析](https://github.com/a572251465/source-code-debugger#koa-router-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90)
-  - [Node require 源码分析](https://github.com/a572251465/source-code-debugger#koa-router-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90)
+  - [Node require 源码分析](https://github.com/a572251465/source-code-debugger#node-require-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90)
 - Java 源码系列
   - [ArrayList.grow 扩容机制 源码分析](https://github.com/a572251465/source-code-debugger#koa-router-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90)
   - [HashMap 扩容机制 源码分析](https://github.com/a572251465/source-code-debugger#hashmap-%E6%89%A9%E5%AE%B9%E6%9C%BA%E5%88%B6-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90)
